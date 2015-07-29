@@ -1,0 +1,22 @@
+{
+  "name": "JigMagga-TodoMVC",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.takeaway.com:Toni/JigMagga-TodoMVC.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^11.0.0",
+    "browserify-jsx": "^1.0.0",
+    "gulp": "^3.9.0",
+    "gulp-connect": "^2.2.0",
+    "react": "^0.13.3"
+  }
+}
