@@ -1,6 +1,7 @@
 var Jig = require("magga-jig"),
+	Magga = require("magga").getInstance(),
 	Actions = require("./actions/actions.js"),
-	EventsPlugin = require("magga-jig/plugins/events");
+	EventsPlugin = require("magga-jig/plugins/events")(Magga.Mediator);
 
 // TODO That Jig is only for browser use we need to think about how to handle that
 

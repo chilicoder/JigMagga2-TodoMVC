@@ -1,6 +1,7 @@
 var Jig = require("magga-jig"),
+	Magga = require("magga").getInstance(),
 	ReactPlugin = require("magga-jig/plugins/react"),
-	EventsPlugin = require("magga-jig/plugins/events"),
+	EventsPlugin = require("magga-jig/plugins/events")(Magga.Mediator),
 	View = require("./views/init.jsx"),
 	Actions = require('./actions/actions.js');
 
