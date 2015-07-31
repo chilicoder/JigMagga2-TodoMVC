@@ -2,7 +2,7 @@ var gulp = require('gulp'),
     connect = require('gulp-connect'),
     Browserify = require("browserify"),
     JSX = require("browserify-jsx"),
-    Magga = require("Magga/src/browserify");
+    Magga = require("magga/src/browserify");
 
 gulp.task('webserver', function () {
     connect.server({
