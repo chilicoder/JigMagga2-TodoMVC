@@ -8,7 +8,8 @@ var Jig = require("magga-jig"),
 module.exports = Jig.create({
 	defaults: {
 		events: {
-			"changeRoute": "handleRouteChange"
+			"changeRoute.action": "handleRouteChange",
+			"routeChanged.event": "handleRouteChange"
 		}
 	},
 	plugins: {
@@ -31,6 +32,7 @@ module.exports = Jig.create({
 		var currentHash = (data.route + "").replace(/^#/, "") 
 		location.hash = currentHash;
 		Actions.routeChange(data);
+		Events.routechanged({currentHash})
 	}
 
 });
