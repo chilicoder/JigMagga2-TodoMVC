@@ -1,6 +1,6 @@
-var Jig = require("MaggaJig"),
-	ReactPlugin = require("MaggaJig/plugins/react"),
-	EventsPlugin = require("MaggaJig/plugins/events"),
+var Jig = require("magga-jig"),
+	ReactPlugin = require("magga-jig/plugins/react"),
+	EventsPlugin = require("magga-jig/plugins/events"),
 	View = require("./views/init.jsx"),
 	Actions = require('./actions/actions.js');
 
@@ -11,8 +11,6 @@ module.exports = Jig.create({
 		view: View,
 		nextRoute: "edit",
 		route: "list",
-
-
 		events: {
 			"clickTodoItem.JigTodoList": "handleClickItem",
 			"routeChange.JigStoreRouter": "handleRouteChange",

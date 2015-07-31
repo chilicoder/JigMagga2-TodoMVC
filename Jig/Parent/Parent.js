@@ -1,4 +1,4 @@
-var Jig = require("MaggaJig");
+var Jig = require("magga-jig");
 
 
 module.exports = Jig.create({

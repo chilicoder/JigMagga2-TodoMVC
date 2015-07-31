@@ -1,7 +1,7 @@
-var Jig = require("MaggaJig"),
-	Magga = require("Magga").getInstance(),
-	ReactPlugin = require("MaggaJig/plugins/react"),
-	EventsPlugin = require("MaggaJig/plugins/events"),
+var Jig = require("magga-jig"),
+	Magga = require("magga").getInstance(),
+	ReactPlugin = require("magga-jig/plugins/react"),
+	EventsPlugin = require("magga-jig/plugins/events"),
 	View = require("./views/init.jsx"),
 	Actions = require('./actions/actions.js');
 
@@ -25,14 +25,14 @@ module.exports = Jig.create({
 		events: EventsPlugin
 	},
 	init: function(){
-		console.log("[Jig.Todo.List] Call on create")
+		console.log("[Jig.Todo.list] Call on create")
 	}
 
 },{
 	// plugin / mixing ?
 	store: {},
 	init: function(){
-		console.log("[Jig.Todo.List] Call on instance")
+		console.log("[Jig.Todo.list] Call on instance")
 	},
 	handleClickTodoItem: function(data){
 		console.log("handleClickTodoItem")

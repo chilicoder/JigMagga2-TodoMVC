@@ -1,4 +1,4 @@
-var Magga = require("Magga").getInstance();
+var Magga = require("magga").getInstance();
 
 module.exports = {
 	submitItem: function(item){

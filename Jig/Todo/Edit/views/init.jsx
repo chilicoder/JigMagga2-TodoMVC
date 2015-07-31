@@ -1,4 +1,4 @@
-var ReactView = require('MaggaJig/plugins/react'),
+var ReactView = require('magga-jig/plugins/react'),
 	React = require("react"),
     Actions = require('./../actions/actions.js');
 

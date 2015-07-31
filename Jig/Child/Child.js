@@ -1,4 +1,4 @@
-var Jig = require("MaggaJig"),
+var Jig = require("magga-jig")jig2,
 	Parent = require("../Parent/Parent.js")
 
 
