@@ -8,3 +8,6 @@ Magga.Mediator = Mediator;
 
 Magga.render(Magga.createFactory(require("./index.conf")));
 
+window['Magga'] = Magga;
+
+

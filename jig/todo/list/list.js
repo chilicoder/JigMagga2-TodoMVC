@@ -13,10 +13,14 @@ module.exports = Jig.create({
 		nextRoute: "edit",
 		route: "list",
 		events: {
-			"clickTodoItem.JigTodoList": "handleClickItem",
-			"routeChange.JigStoreRouter": "handleRouteChange",
-			"changeItem.JigTodoEdit": "handleChangeItem"
+			"clicked.TodoItem.event": "handleClickItem",
+			"changed.Route.event": "handleRouteChange",
+			"changed.Item.event": "handleChangeItem"
+		},
+		getInitialState: function () {
+
 		}
+
 	},
 	plugins: {
 		view: ReactPlugin,
@@ -28,8 +32,11 @@ module.exports = Jig.create({
 		this.plugins.view.render();
 	},
 	handleClickItem: function(data){
-		this.plugins.view.render(null);
-		Actions.changeRoute(this.defaults.nextRoute);
+//		this.plugins.view.render(null);
+//		Actions.changeRoute(this.defaults.nextRoute);
+		Magga.Mediator.publish('change.Route.action',{
+			route: this.defaults.nextRoute
+		});
 	},
 	handleRouteChange: function(data){
 		console.log(data);
@@ -41,6 +48,7 @@ module.exports = Jig.create({
 		}
 	},
 	handleChangeItem: function(data){
-		this.plugins.view.render(data);
+		console.log('handleChangeItem', data);
+		this.plugins.view.render();
 	}
 });

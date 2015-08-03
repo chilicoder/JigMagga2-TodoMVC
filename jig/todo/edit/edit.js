@@ -10,14 +10,14 @@ var Jig = require("magga-jig"),
 module.exports = Jig.create({
 	defaults: {
 		view: View,
-		route: "edit",
+		route: "",
 		nextRoute: "list",
 		events: {
 			// remote events
-			"clickTodoItem.JigTodoList": "handleClickTodoItem",
-			"routeChange.JigStoreRouter": "handleRouteChange",
-			// own events
-			"changeItem.JigTodoEdit": "handleChangeItem"
+			"clicked.TodoItem.event": "handleClickTodoItem",
+			"changed.Route.event": "handleRouteChange",
+//			// own events
+			"change.Item.action": "handleChangeItem"
 		}
 	},
 	plugins: {
@@ -34,18 +34,28 @@ module.exports = Jig.create({
 	init: function(){
 		console.log("[Jig.Todo.list] Call on instance")
 	},
-	handleClickTodoItem: function(data){
-		console.log("handleClickTodoItem")
-		this.store.item = data.item;
+	rerender: function(){
+		this.plugins.view.render(this.store);
 	},
-	handleChangeItem: function(){
+	handleClickTodoItem: function(data){
+		console.log("handleClickTodoItem");
+		this.store.id = data.id;
+		this.store.value = data.value;
+		this.rerender();
+	},
+	handleChangeItem: function(item){
+		if (item.id === this.store.id) {
+			Magga.Mediator.publish('changed.Item.event', item);
+			Magga.Mediator.publish('change.Route.action',{
+				route: this.defaults.nextRoute
+			});
+		}
 		// destroy view
-		this.plugins.view.render();
-		Actions.changeRoute(this.defaults.nextRoute);
+//		this.plugins.view.render();
 	},
 	handleRouteChange: function(data){
 		if(data.route === this.defaults.route){
-			this.plugins.view.render(this.store.item);
+			this.rerender();
 		}else{
 			if(!this.store.item){
 				Actions.changeRoute("");
