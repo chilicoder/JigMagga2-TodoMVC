@@ -17,7 +17,7 @@ module.exports = Jig.create({
 			"clicked.TodoItem.event": "handleClickTodoItem",
 			"changed.Route.event": "handleRouteChange",
 //			// own events
-			"change.Item.action": "handleChangeItem"
+			"submit.ItemView.action": "handleChangeItem"
 		}
 	},
 	plugins: {
@@ -25,39 +25,50 @@ module.exports = Jig.create({
 		events: EventsPlugin
 	},
 	init: function(){
-		console.log("[Jig.Todo.list] Call on create")
+		console.log("[Jig.Todo.list] Call on create");
 	}
 
 },{
-	// plugin / mixing ?
-	store: {},
 	init: function(){
 		console.log("[Jig.Todo.list] Call on instance")
+		this.store = {};
 	},
 	handleClickTodoItem: function(data){
-		console.log("handleClickTodoItem");
 		this.store.id = data.id;
-		this.store.value = data.value;
 		this.rerender();
 	},
 	handleChangeItem: function(item){
 		if (item.id === this.store.id) {
-			Magga.Mediator.publish('changed.Item.event', item);
+			Magga.Mediator.publish('updated.Item.event', item);
 			Magga.Mediator.publish('change.Route.action',{
 				route: this.defaults.nextRoute
 			});
 		}
-		// destroy view
-//		this.plugins.view.render();
 	},
 	handleRouteChange: function(data){
 		if(data.route === this.defaults.route){
 			this.rerender();
 		}else{
 			this.plugins.view.render();
+			delete this.store.id;
 		}
 	},
 	rerender: function() {
-		this.plugins.view.render(this.store);
+		var self = this,
+			id = self.store.id;
+		if (typeof id !== 'undefined') {
+			Magga.Mediator.publish('query.Store.action',{
+				query: {
+					entity:'Item',
+					id: id
+				},
+				cb: function(item){
+					self.plugins.view.render({
+						id: id,
+						value: item
+					});
+				}
+			});
+		}
 	}
 });

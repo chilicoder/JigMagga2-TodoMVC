@@ -15,13 +15,10 @@ module.exports = Jig.create({
 		events: {
 			"clicked.TodoItem.event": "clickedTodoItemEvent",
 			"changed.Route.event": "changedRouteEvent",
-			"changed.Item.event": "rerender",
-			"change.Item.action": "changeItemAction"
-		},
-		getInitialState: function () {
-
+//			"changed.Item.event": "rerender",
+			"change.Item.action": "changeItemAction",
+			"updated.Item.event": "rerender"
 		}
-
 	},
 	plugins: {
 		view: ReactPlugin,
@@ -29,10 +26,10 @@ module.exports = Jig.create({
 	}
 
 },{
-	store: {
-		"1": 'Item 1',
-		"2": 'Another Item 2'
-	},
+//	store: {
+//		"1": 'Item 1',
+//		"2": 'Another Item 2'
+//	},
 	init: function(){
 		this.rerender();
 	},
@@ -51,13 +48,22 @@ module.exports = Jig.create({
 		}
 	},
 	changeItemAction: function (data) {
-		var id = data.id,
-			value = data.value;
-		this.store[id] = value;
+//		var id = data.id,
+//			value = data.value;
+//		this.store[id] = value;
 		Magga.Mediator.publish('changed.Item.event',data);
 	}
 	,
 	rerender: function(){
-		this.plugins.view.render(this.store);
+		var self = this;
+		Magga.Mediator.publish('query.Store.action',{
+			query: {
+				entity:'Item',
+				id: '*'
+			},
+			cb: function(items){
+				self.plugins.view.render(items);
+			}
+		});
 	}
 });

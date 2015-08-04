@@ -24,11 +24,10 @@ module.exports = ReactView.create({
 		});
 	},
 	render: function(){
-		var store = this.props.store || {},
-			items = Object.keys(store)
-				.map(function (curr){
-					return <li className="item-1" data-item-id={curr}>{store[curr]}</li>
-				});
+		var store = this.props.store || [],
+			items = store.map(function (curr){
+				return <li className="item" data-item-id={curr.id}>{curr.value}</li>
+			});
 		return <ul onClick={this.onClick}>{items}</ul>;
 	}
 });

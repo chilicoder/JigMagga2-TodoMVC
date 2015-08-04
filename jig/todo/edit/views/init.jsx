@@ -10,23 +10,29 @@ module.exports = ReactView.create({
             return;
         }
         // todo thats not good because it is not isomorphic
+
         React.render(React.createElement(this.reactComponent, {
             value: data.value,
             id: data.id
         }), document.querySelector(this.defaults.element));
     },
+    getInitialState: function() {
+        // naming it initialX clearly indicates that the only purpose
+        // of the passed down prop is to initialize something internally
+        return {value: this.props.value};
+    },
     handleSumbit: function(e){
         Actions.submitItem({
             id : this.props.id,
-            value: this.props.value
+            value: this.state.value
         })
     },
     handleChange: function(e){
-        this.props.value = e.target.value;
+        this.setState({value: e.target.value});
     },
     render: function(){
         return <div>
-            <input type="text" value={this.props.value} onChange={this.handleChange} />
+            <input type="text" value={this.state.value} onChange={this.handleChange} />
             <button onClick={this.handleSumbit} >Ok</button>
         </div>;
     }
