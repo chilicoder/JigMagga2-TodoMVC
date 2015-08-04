@@ -27,6 +27,11 @@ module.exports = ReactView.create({
             value: this.state.value
         })
     },
+    handleDelete: function(e){
+        Actions.deleteItem({
+            id : this.props.id
+        })
+    },
     handleChange: function(e){
         this.setState({value: e.target.value});
     },
@@ -34,6 +39,7 @@ module.exports = ReactView.create({
         return <div>
             <input type="text" value={this.state.value} onChange={this.handleChange} />
             <button onClick={this.handleSumbit} >Ok</button>
+            <button onClick={this.handleDelete} >Delete</button>
         </div>;
     }
 

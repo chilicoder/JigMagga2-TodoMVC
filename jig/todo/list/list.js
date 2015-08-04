@@ -15,9 +15,9 @@ module.exports = Jig.create({
 		events: {
 			"clicked.TodoItem.event": "clickedTodoItemEvent",
 			"changed.Route.event": "changedRouteEvent",
-//			"changed.Item.event": "rerender",
 			"change.Item.action": "changeItemAction",
-			"updated.Item.event": "rerender"
+			"updated.Item.event": "rerender",
+			"create.TodoItem.action": "createTodoItem"
 		}
 	},
 	plugins: {
@@ -52,8 +52,14 @@ module.exports = Jig.create({
 //			value = data.value;
 //		this.store[id] = value;
 		Magga.Mediator.publish('changed.Item.event',data);
-	}
-	,
+	},
+	createTodoItem: function(value){
+		value = value || 'New Item';
+		Magga.Mediator.publish('createEntity.Store.action',{
+			entity: 'Item',
+			value: value
+		});
+	},
 	rerender: function(){
 		var self = this;
 		Magga.Mediator.publish('query.Store.action',{

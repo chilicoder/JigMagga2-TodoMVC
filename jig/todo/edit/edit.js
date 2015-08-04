@@ -17,7 +17,8 @@ module.exports = Jig.create({
 			"clicked.TodoItem.event": "handleClickTodoItem",
 			"changed.Route.event": "handleRouteChange",
 //			// own events
-			"submit.ItemView.action": "handleChangeItem"
+			"submit.ItemView.action": "handleChangeItem",
+			"delete.ItemView.action": "deleteItemView"
 		}
 	},
 	plugins: {
@@ -51,6 +52,14 @@ module.exports = Jig.create({
 		}else{
 			this.plugins.view.render();
 			delete this.store.id;
+		}
+	},
+	deleteItemView: function(item) {
+		if (item.id === this.store.id) {
+			Magga.Mediator.publish('deleted.Item.event', item);
+			Magga.Mediator.publish('change.Route.action',{
+				route: this.defaults.nextRoute
+			});
 		}
 	},
 	rerender: function() {

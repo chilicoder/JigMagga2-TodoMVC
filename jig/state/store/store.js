@@ -32,7 +32,6 @@ module.exports = Jig.create({
 		var self = this;
 		self._store = {};
 		self._m = Magga.Mediator;
-//		self._subscribeOnEvents(self._m, self);
 		self.idgen = new IdGenerator();
 	},
 	createEntityAction: function(data){
@@ -56,6 +55,7 @@ module.exports = Jig.create({
 			data:  (function(){return data})()
 		});
 
+		// send update event for those who only subscribed for update.
 		self._m.publish('updated.'+entityName+'.event', {
 			id: id,
 			value: data.value
@@ -102,24 +102,36 @@ module.exports = Jig.create({
 					action: 'updated',
 					data: (function(){return data.value})()
 				});
+				// if we have a callback lets start it
+				if (typeof data.cb === 'function') {
+					data.cb();
+				}
+			},
+			deleteCallback = function (data) {
+				var id = data.id,
+					entity = self._store[entityName][id];
+				if (typeof id === 'undefined' || typeof entity === 'undefined') {
+					throw Error('STORE.JIG.DELETE: No id in data or cant find entity in store. Data:', data);
+				}
+				// send update event for those who only subscribed for update.
+				m.publish('updated.'+entityName+'.event', {
+					id: id,
+					value: undefined,
+					cb: function(){
+						entity.events.push({
+							time: new Date(),
+							action: 'deleted'
+						});
+						delete entity.value;
+						// if we have a callback lets start it
+						if (typeof data.cb === 'function') {
+							data.cb();
+						}
+					}
+				});
 			};
 		m.subscribe('updated.'+entityName+'.event',updateCallback);
-		m.subscribe('deleted.'+entityName+'.event',function (data) {
-			var id = data.id,
-				entity = self._store[entityName][id];
-			if (typeof id === 'undefined' || typeof entity !== 'undefined') {
-				throw Error('STORE.JIG.DELETE: No id in data or cant find entity in store. Data:', data);
-			}
-			entity.events.push({
-				time: new Date(),
-				action: 'deleted'
-			});
-			delete entity.value;
-			// if we have a callback lets start it
-			if (typeof data.cb === 'function') {
-				data.cb();
-			}
-		});
+		m.subscribe('deleted.'+entityName+'.event',deleteCallback);
 	},
 	getEntityValue: function (query){
 		var entity,
@@ -133,6 +145,9 @@ module.exports = Jig.create({
 					value: entity[item].value
 				}
 			});
+			result = result.filter(function(item){
+				return typeof item.value !== 'undefined'
+			})
 		} else {
 			entity = this._store[query.entity][query.id];
 			if (typeof entity === 'undefined') {
