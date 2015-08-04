@@ -13,9 +13,10 @@ module.exports = Jig.create({
 		nextRoute: "edit",
 		route: "list",
 		events: {
-			"clicked.TodoItem.event": "handleClickItem",
-			"changed.Route.event": "handleRouteChange",
-			"changed.Item.event": "handleChangeItem"
+			"clicked.TodoItem.event": "clickedTodoItemEvent",
+			"changed.Route.event": "changedRouteEvent",
+			"changed.Item.event": "rerender",
+			"change.Item.action": "changeItemAction"
 		},
 		getInitialState: function () {
 
@@ -28,27 +29,35 @@ module.exports = Jig.create({
 	}
 
 },{
-	init: function(){
-		this.plugins.view.render();
+	store: {
+		"1": 'Item 1',
+		"2": 'Another Item 2'
 	},
-	handleClickItem: function(data){
-//		this.plugins.view.render(null);
-//		Actions.changeRoute(this.defaults.nextRoute);
+	init: function(){
+		this.rerender();
+	},
+	clickedTodoItemEvent: function(data){
 		Magga.Mediator.publish('change.Route.action',{
 			route: this.defaults.nextRoute
 		});
 	},
-	handleRouteChange: function(data){
+	changedRouteEvent: function(data){
 		console.log(data);
 		if(data.route === this.defaults.route){
-			this.plugins.view.render();
+			this.rerender();
 		}else{
 			// remove view
 			this.plugins.view.render(null);
 		}
 	},
-	handleChangeItem: function(data){
-		console.log('handleChangeItem', data);
-		this.plugins.view.render();
+	changeItemAction: function (data) {
+		var id = data.id,
+			value = data.value;
+		this.store[id] = value;
+		Magga.Mediator.publish('changed.Item.event',data);
+	}
+	,
+	rerender: function(){
+		this.plugins.view.render(this.store);
 	}
 });

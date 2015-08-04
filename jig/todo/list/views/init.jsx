@@ -10,7 +10,12 @@ module.exports = ReactView.create({
 		}
 		console.log("NEW ITEM", data && data.item);
 		// todo thats not good because it is not isomorphic
-		React.render(React.createElement(this.reactComponent, data || {}), document.querySelector(this.defaults.element));
+		React.render(
+			React.createElement(this.reactComponent, {
+				store : data
+			}),
+			document.querySelector(this.defaults.element)
+		);
 	},
 	onClick: function(e){
 		Actions.clickTodoItem({
@@ -19,10 +24,11 @@ module.exports = ReactView.create({
 		});
 	},
 	render: function(){
-		return <ul onClick={this.onClick}>
-			<li className="item-1" data-item-id="1"  >Item 1</li>
-			<li className="item-2" data-item-id="2"  >Item 2</li>
-			<li className="item-3" data-item-id="3"  >Item 3</li>
-		</ul>;
+		var store = this.props.store || {},
+			items = Object.keys(store)
+				.map(function (curr){
+					return <li className="item-1" data-item-id={curr}>{store[curr]}</li>
+				});
+		return <ul onClick={this.onClick}>{items}</ul>;
 	}
 });

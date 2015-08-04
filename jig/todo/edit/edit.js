@@ -10,7 +10,7 @@ var Jig = require("magga-jig"),
 module.exports = Jig.create({
 	defaults: {
 		view: View,
-		route: "",
+		route: "edit",
 		nextRoute: "list",
 		events: {
 			// remote events
@@ -34,9 +34,6 @@ module.exports = Jig.create({
 	init: function(){
 		console.log("[Jig.Todo.list] Call on instance")
 	},
-	rerender: function(){
-		this.plugins.view.render(this.store);
-	},
 	handleClickTodoItem: function(data){
 		console.log("handleClickTodoItem");
 		this.store.id = data.id;
@@ -57,10 +54,10 @@ module.exports = Jig.create({
 		if(data.route === this.defaults.route){
 			this.rerender();
 		}else{
-			if(!this.store.item){
-				Actions.changeRoute("");
-			}
 			this.plugins.view.render();
 		}
+	},
+	rerender: function() {
+		this.plugins.view.render(this.store);
 	}
 });
