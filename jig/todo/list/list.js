@@ -26,15 +26,11 @@ module.exports = Jig.create({
 	}
 
 },{
-//	store: {
-//		"1": 'Item 1',
-//		"2": 'Another Item 2'
-//	},
 	init: function(){
 		this.rerender();
 	},
 	clickedTodoItemEvent: function(data){
-		Magga.Mediator.publish('change.Route.action',{
+		Magga.Mediator.publish('changeRoute.Router.action',{
 			route: this.defaults.nextRoute
 		});
 	},
