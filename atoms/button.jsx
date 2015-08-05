@@ -1,6 +1,6 @@
 var ReactView = require('magga-jig/plugins/react'),
     React = require("react"),
-    Actions = require('./../actions/actions.js'),
+    Actions = require('./../commands/commands.js'),
     Styles = require("./../style/init.scss");
 
 module.exports = ReactView.create({
