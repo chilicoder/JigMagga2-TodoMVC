@@ -41,9 +41,7 @@ module.exports = Jig.create({
 	handleChangeItem: function(item){
 		if (item.id === this.store.id) {
 			Magga.Mediator.publish('updated.Item.event', item);
-			Magga.Mediator.publish('change.Route.action',{
-				route: this.defaults.nextRoute
-			});
+			Magga.Mediator.publish('historyBack.Router.action');
 		}
 	},
 	handleRouteChange: function(data){
@@ -57,9 +55,7 @@ module.exports = Jig.create({
 	deleteItemView: function(item) {
 		if (item.id === this.store.id) {
 			Magga.Mediator.publish('deleted.Item.event', item);
-			Magga.Mediator.publish('change.Route.action',{
-				route: this.defaults.nextRoute
-			});
+			Magga.Mediator.publish('historyBack.Router.action');
 		}
 	},
 	rerender: function() {

@@ -6,10 +6,5 @@ module.exports = {
 	},
 	deleteItem: function(item){
 		Magga.Mediator.publish("delete.ItemView.action", item);
-	},
-	changeRoute: function(route){
-			Magga.Mediator.publish("change.Route.action", {
-				route: route
-			});
 	}
 };
