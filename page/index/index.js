@@ -11,10 +11,26 @@ Magga.render(Magga.createFactory(require("./index.conf")));
 window['Magga'] = Magga;
 
 setTimeout(function(){
+	var id;
 	Magga.Mediator.publish('createEntity.Store.action',{
 		entity: 'Item',
 		value: 'Some first item'
 	});
+
+	Magga.Mediator.publish('executeCommand.EventStore.action', {
+			command:'create.Todo',
+			cb: function(a){
+				Magga.Mediator.publish('executeCommand.EventStore.action',{
+					command:'changeDescription.Todo',
+					params:{
+						id:a,
+						description:'OneMoreThing'
+					},
+					cb:function(a){console.log(a)
+					}})
+			}
+		});
+
 },2000);
 
 setTimeout(function(){

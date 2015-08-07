@@ -15,6 +15,7 @@
   "dependencies": {
     "browserify": "^11.0.0",
     "browserify-jsx": "^1.0.0",
+    "eventric": "^0.14.0",
     "gulp": "^3.9.0",
     "gulp-connect": "^2.2.0",
     "magga": "git://github.com/JigMagga/Magga",
