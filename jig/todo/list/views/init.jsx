@@ -28,9 +28,14 @@ module.exports = ReactView.create({
 		},
 		render: function(){
 			var store = this.props.store || [],
-				items = store.map(function (curr){
-					return <li className="item" data-item-id={curr.id}>{curr.value}</li>
+				items = store.todos.map(function (curr){
+					return <li className="item"><div data-item-id={curr.id}>{curr.description}</div><div>{curr.status}</div></li>
 				});
-			return <div><ul onClick={this.onClick}>{items}</ul><button onClick = {this.addItem}>New item</button></div>;
+			return <div>
+				<h2>Total number of items: <span>{store.count}</span></h2>
+				<h2>Undone items: <span>{store.countUndone}</span></h2>
+				<button onClick = {this.addItem}>New item</button>
+				<ul onClick={this.onClick}>{items}</ul>
+			</div>;
 }
 });

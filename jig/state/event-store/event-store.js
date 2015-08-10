@@ -28,12 +28,14 @@ module.exports = Jig.create({
 		},
 		events: {
 			//TODO add actions
-			"executeCommand.EventStore.action": "HandleExecuteCommand"
+			"executeCommand.EventStore.action": "HandleExecuteCommand",
+			"executeQuery.EventStore.action": "HandleExecuteQuery",
+			"getProjection.EventStore.action": "HandleGetProjection",
+			"printEvents.Store.action": "printEventsStoreAction"
 		}
 	},
 	plugins: {
 		events: EventsPlugin
-//		store: EventricStorePlugin
 	}
 },{
 	init: function() {
@@ -41,6 +43,7 @@ module.exports = Jig.create({
 			contextsConfig = self.defaults.context,
 			context;
 		self._m = Magga.Mediator;
+		self.domainEvents = [];
 		self.contexts = {};
 		Object.keys(contextsConfig).forEach(function(key) {
 			context = self.contexts[key] = Eventric.context(key);
@@ -62,12 +65,12 @@ module.exports = Jig.create({
 					defObj[keyDomEv] = domainEvent;
 					context.defineDomainEvents(defObj);
 
-					//subscribeToDomainEvent
+					//subscribeToDomainEvents
 					context.subscribeToDomainEvent(keyDomEv,function(domainE){
-						self._m.publish(keyDomEv,domainE);
+						self.domainEvents.push(domainE);
+						self._m.publish('savedDomainEvent.EventStore.event', domainE);
 					});
 				});
-
 				//addCommandHandlers for this aggregate
 				Object.keys(aggregateConf.commands).forEach(function (keyCmd) {
 					var command = aggregateConf.commands[keyCmd],
@@ -84,8 +87,16 @@ module.exports = Jig.create({
 					context.addProjection(keyProj, projection);
 				});
 
+			context.addQueryHandlers({
+				getTodoList: function(params){
+					return this;
+				}
+			});
+
 			context.initialize();
 		});
+
+		self._m.publish('initialized.EventStore.event', self);
 
 		//TODO only for debug. delete it
 		window['EventStore'] = self;
@@ -94,5 +105,39 @@ module.exports = Jig.create({
 	HandleExecuteCommand: function(data){
 		data.context = data.context || this.defaults.defaultContext;
 		this.contexts[data.context].command(data.command, data.params).then(data.cb);
+	},
+
+	HandleExecuteQuery: function(data){
+		data.context = data.context || this.defaults.defaultContext;
+		this.contexts[data.context].query(data.query, data.params).then(data.cb);
+	},
+
+	HandleGetProjection: function(data){
+		data.context = data.context || this.defaults.defaultContext;
+		if (typeof data.cb !=='function') {
+			throw new Error('Event-store Jig: No callback in GetContext Action',data);
+		}
+		if (typeof data.projection ==='undefined') {
+			throw new Error('Event-store Jig: No projection stated in data: ',data);
+		}
+		data.cb(this.contexts[data.context].$projections[data.projection]);
+	},
+	printEventsStoreAction: function (){
+		var self = this,
+			store = self.domainEvents,
+			key,id;
+
+		console.table(store.map(function(item){
+			return {
+				time:item.timestamp,
+				aggregateId: item.aggregate.id,
+				aggregateName: item.aggregate.name,
+				event: item.name,
+				value: JSON.stringify(item.payload)
+			}
+		}));
+
+
+
 	}
 });

@@ -18,6 +18,7 @@ module.exports = Jig.create({
 			"changed.Route.event": "handleRouteChange",
 //			// own events
 			"submit.ItemView.action": "handleChangeItem",
+			"complete.ItemView.action": "handleCompleteItem",
 			"delete.ItemView.action": "deleteItemView"
 		}
 	},
@@ -31,7 +32,7 @@ module.exports = Jig.create({
 
 },{
 	init: function(){
-		console.log("[Jig.Todo.list] Call on instance")
+		console.log("[Jig.Todo.list] Call on instance");
 		this.store = {};
 	},
 	handleClickTodoItem: function(data){
@@ -40,10 +41,31 @@ module.exports = Jig.create({
 	},
 	handleChangeItem: function(item){
 		if (item.id === this.store.id) {
-			Magga.Mediator.publish('updated.Item.event', item);
+
+			Magga.Mediator.publish('executeCommand.EventStore.action',{
+				command:'changeDescription.Todo',
+				params:{
+					id:item.id,
+					description:item.value
+				}
+			});
 			Magga.Mediator.publish('historyBack.Router.action');
 		}
 	},
+
+	handleCompleteItem: function(item){
+		if (item.id === this.store.id) {
+
+			Magga.Mediator.publish('executeCommand.EventStore.action',{
+				command:'complete.Todo',
+				params:{
+					id:item.id
+				}
+			});
+			Magga.Mediator.publish('historyBack.Router.action');
+		}
+	},
+
 	handleRouteChange: function(data){
 		if(data.route === this.defaults.route){
 			this.rerender();
@@ -54,7 +76,12 @@ module.exports = Jig.create({
 	},
 	deleteItemView: function(item) {
 		if (item.id === this.store.id) {
-			Magga.Mediator.publish('deleted.Item.event', item);
+			Magga.Mediator.publish('executeCommand.EventStore.action',{
+				command:'delete.Todo',
+				params:{
+					id:item.id
+				}
+			});
 			Magga.Mediator.publish('historyBack.Router.action');
 		}
 	},
@@ -62,15 +89,13 @@ module.exports = Jig.create({
 		var self = this,
 			id = self.store.id;
 		if (typeof id !== 'undefined') {
-			Magga.Mediator.publish('query.Store.action',{
-				query: {
-					entity:'Item',
-					id: id
-				},
-				cb: function(item){
+
+			Magga.Mediator.publish('getProjection.EventStore.action', {
+				projection:'TodoList',
+				cb: function(projection){
 					self.plugins.view.render({
 						id: id,
-						value: item
+						value: projection.todos[projection.todosUuids[id]].description
 					});
 				}
 			});

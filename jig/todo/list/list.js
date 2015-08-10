@@ -17,7 +17,9 @@ module.exports = Jig.create({
 			"changed.Route.event": "changedRouteEvent",
 			"change.Item.action": "changeItemAction",
 			"updated.Item.event": "rerender",
-			"create.TodoItem.action": "createTodoItem"
+			"create.TodoItem.action": "createTodoItem",
+			"savedDomainEvent.EventStore.event": "HandleSavedDomainEvent"
+
 		}
 	},
 	plugins: {
@@ -47,25 +49,37 @@ module.exports = Jig.create({
 //		var id = data.id,
 //			value = data.value;
 //		this.store[id] = value;
-		Magga.Mediator.publish('changed.Item.event',data);
+	//	Magga.Mediator.publish('changed.Item.event',data);
 	},
 	createTodoItem: function(value){
 		value = value || 'New Item';
-		Magga.Mediator.publish('createEntity.Store.action',{
-			entity: 'Item',
-			value: value
+		Magga.Mediator.publish('executeCommand.EventStore.action',{
+			command:'create.Todo',
+			cb: function(aggregateId){
+				Magga.Mediator.publish('executeCommand.EventStore.action',{
+					command:'changeDescription.Todo',
+					params:{
+						id:aggregateId,
+						description: value
+					}
+				});
+			}
 		});
+	},
+	HandleSavedDomainEvent: function(){
+		var self = this;
+		setTimeout(function(){
+			self.rerender();
+		},0);
 	},
 	rerender: function(){
 		var self = this;
-		Magga.Mediator.publish('query.Store.action',{
-			query: {
-				entity:'Item',
-				id: '*'
-			},
-			cb: function(items){
-				self.plugins.view.render(items);
+		Magga.Mediator.publish('getProjection.EventStore.action', {
+			projection:'TodoList',
+			cb: function(projection){
+				self.plugins.view.render(projection);
 			}
 		});
+
 	}
 });

@@ -6,6 +6,9 @@ module.exports = {
     },
     executeQuery: function(data) {
         Magga.Mediator.publish('executeQuery.EventStore.action',data);
+    },
+    getProjection: function(data) {
+        Magga.Mediator.publish('getProjection.EventStore.action',data);
     }
 
 };

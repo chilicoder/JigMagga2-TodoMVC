@@ -11,34 +11,44 @@ Magga.render(Magga.createFactory(require("./index.conf")));
 window['Magga'] = Magga;
 
 setTimeout(function(){
-	var id;
-	Magga.Mediator.publish('createEntity.Store.action',{
-		entity: 'Item',
-		value: 'Some first item'
+	Magga.Mediator.publish('executeCommand.EventStore.action', {
+		command:'create.Todo',
+		cb: function(a){
+			Magga.Mediator.publish('executeCommand.EventStore.action',{
+				command:'changeDescription.Todo',
+				params:{
+					id:a,
+					description:'The very first todo'
+				}
+			});
+		}
 	});
 
-	Magga.Mediator.publish('executeCommand.EventStore.action', {
-			command:'create.Todo',
-			cb: function(a){
-				Magga.Mediator.publish('executeCommand.EventStore.action',{
-					command:'changeDescription.Todo',
-					params:{
-						id:a,
-						description:'OneMoreThing'
-					},
-					cb:function(a){console.log(a)
-					}})
-			}
-		});
-
-},2000);
+},1000);
 
 setTimeout(function(){
-	Magga.Mediator.publish('createEntity.Store.action',{
-		entity: 'Item',
-		value: 'Another second item'
+	var id;
+	Magga.Mediator.publish('executeCommand.EventStore.action', {
+		command:'create.Todo',
+		cb: function(a){
+			Magga.Mediator.publish('executeCommand.EventStore.action',{
+				command:'changeDescription.Todo',
+				params:{
+					id:a,
+					description:'OneMoreThing'
+				}
+			});
+		}
+	});
+
+},1500);
+
+
+setTimeout(function(){
+	Magga.Mediator.publish('getProjection.EventStore.action', {
+		projection:'TodoList',
+		cb: function(a){
+			console.log('QUERY result',a);
+		}
 	});
 },4000);
-
-
-
