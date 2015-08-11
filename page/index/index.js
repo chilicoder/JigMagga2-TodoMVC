@@ -1,5 +1,6 @@
+require('./index.css');
+
 var Magga = require("magga").getInstance(),
-// todo rename into MaggaMediator
 	Mediator = new (require("magga-mediator"))();
 
 // todo use extension API

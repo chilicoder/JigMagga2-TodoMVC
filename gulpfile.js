@@ -2,6 +2,7 @@ var gulp = require('gulp'),
     connect = require('gulp-connect'),
     Browserify = require("browserify"),
     JSX = require("browserify-jsx"),
+    CSS = require("browserify-css");
     Magga = require("magga/src/browserify");
 
 gulp.task('webserver', function () {
@@ -17,6 +18,7 @@ gulp.task('webserver', function () {
                         browserify
                         	.transform(JSX)
                             .transform(magga.browserifyConfTransform())
+                            .transform(CSS, {global: true})
                             .add(__dirname + req.url)
                             .bundle().pipe(res);
 

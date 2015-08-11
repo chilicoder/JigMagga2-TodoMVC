@@ -1,8 +1,7 @@
 module.exports = function (context){
     return function TodoList(){
         var self = this;
-        self.todos = [];
-        self.todosUuids = {};
+        self.todos = {};
         self.count = 0;
         self.countUndone = 0;
 
@@ -23,41 +22,44 @@ module.exports = function (context){
                 description: domainEvent.payload.description,
                 status: domainEvent.payload.status
             };
-            self.todos.push(newTodo);
-            self.todosUuids[domainEvent.aggregate.id] = self.todos.indexOf(newTodo);
+
+            self.todos[domainEvent.aggregate.id] = newTodo; //self.todos.indexOf(newTodo);
             self.count++;
             self.countUndone++;
         };
 
         self['handleChanged.Todo/description.event'] = function(domainEvent){
-            var key = self.todosUuids[domainEvent.aggregate.id];
-            self.todos[key].description = domainEvent.payload.description;
+            self.todos[domainEvent.aggregate.id].description = domainEvent.payload.description;
+
         };
 
 
         self['handleCompleted.Todo/status.event'] = function(domainEvent){
-            var key = self.todosUuids[domainEvent.aggregate.id],
+            var todo = self.todos[domainEvent.aggregate.id],
                 status = domainEvent.payload.status;
-            if (self.todos[key].status === 'undone') {
-                self.todos[key].status = status;
+            if (todo.status === 'undone') {
+                todo.status = status;
                 self.countUndone--;
             }
         };
 
         self['handleReactivated.Todo/status.event'] = function(domainEvent){
-            var key = self.todosUuids[domainEvent.aggregate.id],
+            var todo = self.todos[domainEvent.aggregate.id],
                 status = domainEvent.payload.status;
-            if (self.todos[key].status === 'done') {
-                self.todos[key].status = status;
-                self.countUndone--;
+            if (todo.status === 'done') {
+                todo.status = status;
+                self.countUndone++;
             }
         };
 
+
         self['handleDeleted.Todo.event'] = function(domainEvent){
-            var key = self.todosUuids[domainEvent.aggregate.id];
-            self.todos.splice(key,1);
+            var todo = self.todos[domainEvent.aggregate.id];
+            if (todo.status === 'undone') {
+                self.countUndone--;
+            }
+            delete self.todos[domainEvent.aggregate.id];
             self.count--;
-            self.countUndone--;
         };
 
     }

@@ -16,8 +16,7 @@ module.exports = Jig.create({
 				defaultRoute: 'list'
 			},
 			routes: [
-				{name: 'list', path: '/list'},
-				{name: 'edit', path: '/edit'}
+				{name: 'list', path: '/list'}
 			]
 		},
 		events: {
