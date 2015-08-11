@@ -38,15 +38,19 @@ module.exports = function (context){
         self['handleCompleted.Todo/status.event'] = function(domainEvent){
             var key = self.todosUuids[domainEvent.aggregate.id],
                 status = domainEvent.payload.status;
-            self.todos[key].status = status;
-            self.countUndone--;
+            if (self.todos[key].status === 'undone') {
+                self.todos[key].status = status;
+                self.countUndone--;
+            }
         };
 
         self['handleReactivated.Todo/status.event'] = function(domainEvent){
             var key = self.todosUuids[domainEvent.aggregate.id],
                 status = domainEvent.payload.status;
-            self.todos[key].status = status;
-            self.countUndone++;
+            if (self.todos[key].status === 'done') {
+                self.todos[key].status = status;
+                self.countUndone--;
+            }
         };
 
         self['handleDeleted.Todo.event'] = function(domainEvent){
