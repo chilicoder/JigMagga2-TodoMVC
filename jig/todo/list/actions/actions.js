@@ -59,6 +59,11 @@ module.exports = {
 				id:item.id
 			}
 		});
+	},
+	addRouteHandler: function(handler) {
+		Magga.Mediator.publish('addListener.Router.action', {
+			cb: handler
+		});
 	}
 //	changeRoute: function(route){
 //			Magga.Mediator.publish("changeRoute", {

@@ -13,6 +13,7 @@ var ReactView = require('magga-jig/plugins/react'),
 	ENTER_KEY = 13;
 
 module.exports = ReactView.create({
+
 	init: function(data) {
 		if(data === null){
 			React.unmountComponentAtNode(document.querySelector(this.defaults.element));
@@ -27,9 +28,27 @@ module.exports = ReactView.create({
 			document.querySelector(this.defaults.element)
 		);
 	},
+
 	getInitialState: function () {
+		// TODO This shouldn't be here. Find where to put it
+		Actions.addRouteHandler(this.HandleRouteChange.bind(this));
 		return {editing: null};
 	},
+
+	HandleRouteChange: function(route){
+		switch (route.name) {
+			case 'index':
+				this.setState({nowShowing: app.ALL_TODOS});
+				break;
+			case 'active':
+				this.setState({nowShowing: app.ACTIVE_TODOS});
+				break;
+			case 'completed':
+				this.setState({nowShowing: app.COMPLETED_TODOS});
+				break;
+		}
+	},
+
 	toggleAll: function (event) {
 		var todos = this.props.store.todos,
 			checked = event.target.checked;
@@ -61,15 +80,7 @@ module.exports = ReactView.create({
 				}
 			});
 	},
-	onClick: function(e){
-		Actions.clickTodoItem({
-			id: e.target.getAttribute('data-item-id'),
-			value: e.target.innerHTML
-		});
-	},
-	addItem: function(e){
-		Actions.clickAddItem();
-	},
+
 	edit: function (todo, callback) {
 		// refer to todoItem.jsx `handleEdit` for the reason behind the callback
 		this.setState({editing: todo.id}, callback);
@@ -107,7 +118,19 @@ module.exports = ReactView.create({
 			todos = Object.keys(store.todos).map(function(key){
 				return store.todos[key];
 			}),
-			todoItems = todos.map(function (todo){
+
+			shownTodos = todos.filter(function (todo) {
+				switch (this.state.nowShowing) {
+					case app.ACTIVE_TODOS:
+						return (todo.status === 'undone');
+					case app.COMPLETED_TODOS:
+						return (todo.status === 'done');
+					default:
+						return true;
+				}
+			}, this),
+
+			todoItems = shownTodos.map(function (todo){
 				return (<TodoItem
 					key={todo.id}
 					todo={todo}

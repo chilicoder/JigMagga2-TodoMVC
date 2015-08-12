@@ -25,16 +25,12 @@ module.exports = Jig.create({
 
 },{
 	init: function(){
-		this.rerender();
+		var self = this;
+
+		self.rerender();
 	},
 //	changedRouteEvent: function(data){
 //		console.log(data);
-//		if(data.route === this.defaults.route){
-//			this.rerender();
-//		}else{
-//			// remove view
-//			this.plugins.view.render(null);
-//		}
 //	},
 	HandleSavedDomainEvent: function(){
 		var self = this;

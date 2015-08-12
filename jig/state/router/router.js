@@ -12,11 +12,14 @@ module.exports = Jig.create({
 		router: {
 			options: {
 				useHash: true,
-				hashPrefix: '!',
-				defaultRoute: 'list'
+				hashPrefix: '',
+				defaultRoute: 'index'
 			},
 			routes: [
-				{name: 'list', path: '/list'}
+				{name: 'index', path: '/'},
+				{name: 'active', path: '/active'},
+				{name: 'completed', path: '/completed'}
+
 			]
 		},
 		events: {
@@ -55,6 +58,8 @@ module.exports = Jig.create({
 		self.router.start(function(){
 			console.warn('Router started',self.router);
 		});
+
+		//TODO delete this after construcion
 		window['Router'] = self.router;
 	},
 	addListener: function(data){
