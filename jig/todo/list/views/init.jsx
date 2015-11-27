@@ -5,29 +5,28 @@ app.ALL_TODOS = 'all';
 app.ACTIVE_TODOS = 'active';
 app.COMPLETED_TODOS = 'completed';
 
-var ReactView = require('magga-jig/plugins/react'),
-	React = require("react"),
+var React = require("react"),
 	Actions = require('./../actions/actions.js'),
 	TodoItem = require('./todoItem.jsx'),
 	TodoFooter = require('./todoFooter.jsx'),
 	ENTER_KEY = 13;
 
-module.exports = ReactView.create({
+module.exports = React.createClass({
 
-	init: function(data) {
-		if(data === null){
-			React.unmountComponentAtNode(document.querySelector(this.defaults.element));
-			return;
-		}
+	//init: function(data) {
+	//	if(data === null){
+	//		React.unmountComponentAtNode(document.querySelector(this.defaults.element));
+	//		return;
+	//	}
 
-		// todo thats not good because it is not isomorphic
-		React.render(
-			React.createElement(this.reactComponent, {
-				store : data
-			}),
-			document.querySelector(this.defaults.element)
-		);
-	},
+		//// todo thats not good because it is not isomorphic
+		//React.render(
+		//	React.createElement(this.reactComponent, {
+		//		store : data
+		//	}),
+		//	document.querySelector(this.defaults.element)
+		//);
+	//},
 
 	getInitialState: function () {
 		// TODO This shouldn't be here. Find where to put it

@@ -43,7 +43,7 @@ module.exports = Jig.create({
 		Magga.Mediator.publish('getProjection.EventStore.action', {
 			projection:'TodoList',
 			cb: function(projection){
-				self.plugins.view.render(projection);
+				self.plugins.view.render({store:projection});
 			}
 		});
 
